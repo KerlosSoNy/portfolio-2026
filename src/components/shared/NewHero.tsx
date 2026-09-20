@@ -129,8 +129,7 @@ const PrismaHero = () => {
                                 className="text-xs text-primary/70 sm:text-sm md:text-base"
                                 style={{ lineHeight: 1.2 }}
                             >
-                                Prisma is a worldwide network of visual artists, filmmakers and storytellers bound not by place, status or labels but by passion and hunger to unlock potential through our unique perspectives.
-                            </motion.p>
+                                Im a Front-End Developer who builds experiences, not just websites. I combine code, creativity, and a little obsession with details to turn ideas into fast, interactive, and memorable digital products.                            </motion.p>
 
                             <MagneticComponent className="w-fit!">
                                 <motion.button
@@ -147,7 +146,6 @@ const PrismaHero = () => {
                                     </span>
                                 </motion.button>
                             </MagneticComponent>
-
                         </div>
                     </div>
                 </div>
