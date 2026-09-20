@@ -34,15 +34,27 @@ export default function Home() {
       }
     }
 
+    const primePlayback = () => {
+      const playResult = video.play()
+      if (playResult && typeof playResult.then === 'function') {
+        playResult.then(() => video.pause()).catch(() => { })
+      } else {
+        video.pause()
+      }
+    }
+
     video.addEventListener('loadedmetadata', updateDuration)
+    video.addEventListener('loadedmetadata', primePlayback)
 
     // In case metadata is already loaded
     if (video.readyState >= 1) {
       updateDuration()
+      primePlayback()
     }
 
     return () => {
       video.removeEventListener('loadedmetadata', updateDuration)
+      video.removeEventListener('loadedmetadata', primePlayback)
 
       if (rafRef.current !== null) {
         cancelAnimationFrame(rafRef.current)
