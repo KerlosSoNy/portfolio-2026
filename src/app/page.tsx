@@ -4,6 +4,8 @@ import { useMotionValueEvent, useScroll } from 'motion/react'
 import { useEffect, useRef } from 'react'
 import { ImagesScrollingAnimation } from '@/components/scrolling'
 import { PrismaHero } from '@/components/shared/NewHero'
+import AboutSection from '@/components/shared/AboutSection'
+import { LetsWorkTogether } from '@/components/shared/LetsTalk'
 
 export default function Home() {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -92,9 +94,10 @@ export default function Home() {
           type="video/mp4"
         />
       </video>
-
+      <div className="w-screen h-screen backdrop-blur-lg fixed top-0" />
       <PrismaHero />
-      <ImagesScrollingAnimation />
+      <AboutSection />
+      <LetsWorkTogether />
     </main>
   )
 }

@@ -39,12 +39,12 @@ export const AboutSection = () => {
     return (
         <section
             ref={sectionRef}
-            className="relative w-full h-screen font-en! z-10 overflow-hidden bg-transparent py-10 3xl:py-30 text-white flex items-center justify-center sm:py-32 md:py-40"
+            className="relative w-full h-fit font-en! z-10 overflow-hidden bg-transparent text-white flex items-center justify-center sm:py-32 md:py-40 py-10 3xl:py-30"
         >
             <motion.span
                 aria-hidden
                 style={{ y: watermarkY }}
-                className="pointer-events-none absolute top-[1vw] 3xl:top-8 left-1/2 -translate-x-1/2 select-none whitespace-nowrap text-[28vw] font-medium leading-none tracking-tighter text-white/[0.04] sm:text-[22vw]"
+                className="pointer-events-none absolute top-20 md:top-[7vw] 3xl:top-8 left-1/2 -translate-x-1/2 select-none whitespace-nowrap text-[28vw] font-medium leading-none tracking-tighter text-white/[0.04] sm:text-[22vw]"
             >
                 About
             </motion.span>
@@ -100,7 +100,7 @@ export const AboutSection = () => {
                     </a>
                 </motion.div>
 
-                {/* <div className="col-span-12 grid grid-cols-2 gap-6 border-t border-white/10 pt-10 sm:gap-8 md:grid-cols-4">
+                <div className="col-span-12 grid grid-cols-2 gap-6 border-t border-white/10 pt-10 sm:gap-8 md:grid-cols-4">
                     {stats.map((stat, i) => (
                         <motion.div
                             key={stat.label}
@@ -122,7 +122,7 @@ export const AboutSection = () => {
                             </span>
                         </motion.div>
                     ))}
-                </div> */}
+                </div>
 
                 <div className="col-span-12 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-3">
                     {services.map((service, i) => (

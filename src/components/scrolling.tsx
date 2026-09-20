@@ -101,7 +101,6 @@ const ImagesScrollingAnimation = () => {
                 ref={container}
                 className="relative flex w-full flex-col items-center justify-center"
             >
-                <div className="w-screen h-screen backdrop-blur-lg fixed top-0" />
                 {slides.map((slide, i) => {
                     const targetScale = Math.max(0.3, 1 - (slides.length - i - 1) * 0.08)
                     return (

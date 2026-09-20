@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["192.168.1.75"],
+allowedDevOrigins: ['192.168.1.107'],
   turbopack: {
     // @splinetool/runtime references its draco decoder and boolean-op wasm
     // files via `new URL("...", import.meta.url)`, but those files aren't

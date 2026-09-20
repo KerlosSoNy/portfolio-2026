@@ -6,7 +6,6 @@ import type React from "react"
 import { useState } from "react"
 import { ArrowLeft, ArrowUpRight, Calendar } from "lucide-react"
 import Link from "next/link"
-import ParticlesComponent from "./Particles/Particles"
 
 export function LetsWorkTogether() {
     const [isHovered, setIsHovered] = useState(false)
