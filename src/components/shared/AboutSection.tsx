@@ -6,10 +6,10 @@ import { useRef } from "react"
 import { WordsPullUp } from "./NewHero"
 
 const stats = [
-    { value: "5+", label: "Years of experience" },
-    { value: "40+", label: "Projects delivered" },
-    { value: "20+", label: "Happy clients" },
-    { value: "8", label: "Awards & nominations" },
+    { value: "3+", label: "Years of experience" },
+    { value: "20+", label: "Projects delivered" },
+    { value: "10+", label: "Happy clients" },
+    { value: "4", label: "Awards & nominations" },
 ]
 
 const services = [
@@ -18,7 +18,7 @@ const services = [
     { title: "Motion", description: "Storytelling through animation, transitions and interactive detail." },
 ]
 
-const fadeUp: Variants = {
+export const fadeUp: Variants = {
     hidden: { y: 40, opacity: 0 },
     show: (i: number = 0) => ({
         y: 0,
@@ -39,17 +39,19 @@ export const AboutSection = () => {
     return (
         <section
             ref={sectionRef}
-            className="relative w-full h-fit font-en! z-10 overflow-hidden bg-transparent text-white flex items-center justify-center sm:py-32 md:py-40 py-10 3xl:py-30"
+            className="relative w-full h-fit font-en! z-10 overflow-hidden bg-transparent text-white flex items-center justify-center sm:pt-32 md:py-t0 pt-10 3xl:pt-30"
         >
             <motion.span
                 aria-hidden
                 style={{ y: watermarkY }}
-                className="pointer-events-none absolute top-20 md:top-[7vw] 3xl:top-8 left-1/2 -translate-x-1/2 select-none whitespace-nowrap text-[28vw] font-medium leading-none tracking-tighter text-white/[0.04] sm:text-[22vw]"
+                className="pointer-events-none absolute top-34 md:top-45 left-1/2 -translate-x-1/2 select-none whitespace-nowrap text-[26vw] font-medium leading-none tracking-tighter text-white/20 sm:text-[18vw]"
             >
                 About
             </motion.span>
 
-            <div className="relative grid max-w-[1800px] grid-cols-12 gap-x-4 gap-y-14 px-4 py-30 sm:px-6 md:px-10">
+            <div
+                className="relative grid max-w-[1800px] grid-cols-12 gap-x-4 gap-y-14 px-4 py-30 sm:px-6 md:px-10"
+            >
                 <motion.div
                     initial="hidden"
                     whileInView="show"

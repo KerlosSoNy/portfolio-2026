@@ -25,7 +25,7 @@ export default function Footer() {
     return (
         <div
             ref={ref}
-            className={`relative z-20 font-en bg-transparent backdrop-blur-3xl flex flex-col justify-center gap-10  text-main w-full py-12 xl:h-125.25 xl:py-0 px-6 2xs:px-8 md:px-12 lg:px-16 xl:px-25 3xl:px-50.5 transition-all duration-700 ease-out ${isVisible
+            className={`relative z-20 font-en bg-transparent backdrop-blur-3xl flex flex-col justify-center gap-10  text-white w-full py-12 xl:h-125.25 xl:py-0 px-6 2xs:px-8 md:px-12 lg:px-16 xl:px-25 3xl:px-50.5 transition-all duration-700 ease-out ${isVisible
                 ? "translate-y-0 opacity-100"
                 : "translate-y-20 opacity-0"
                 }`}
@@ -49,7 +49,7 @@ export default function Footer() {
                             {
                                 Links?.slice(0, 5).map((link, index) => {
                                     return (
-                                        <Link href={link?.href} key={index} className="text-6 w-full max-w-41 text-text-placeholder hover:text-main transition-colors">
+                                        <Link href={link?.href} key={index} className="text-6 w-full max-w-41 text-text-placeholder hover:text-white transition-colors">
                                             {link.key.charAt(0).toUpperCase() + link.key.slice(1)}
                                         </Link>
                                     )
@@ -75,7 +75,7 @@ export default function Footer() {
                         <span className="text-6 text-text-disabled">
                             Call Me
                         </span>
-                        <Link href="tel:+201019085973" dir="ltr" className="text-6 text-text-secondary hover:text-main transition-colors text-start"   >
+                        <Link href="tel:+201019085973" dir="ltr" className="text-6 text-text-secondary hover:text-white transition-colors text-start"   >
                             +201019085973
                         </Link>
                     </div>
@@ -83,7 +83,7 @@ export default function Footer() {
                         <span className="text-6 text-text-disabled">
                             Email
                         </span>
-                        <Link href="mailto:Kerlosssony@gmail.com" className="text-6 text-text-secondary hover:text-main transition-colors"   >
+                        <Link href="mailto:Kerlosssony@gmail.com" className="text-6 text-text-secondary hover:text-white transition-colors"   >
                             Kerlosssony@gmail.com
                         </Link>
                     </div>

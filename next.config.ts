@@ -15,7 +15,7 @@ allowedDevOrigins: ['192.168.1.107'],
     ],
   },
   images: {
-    domains: ["images.unsplash.com","plus.unsplash.com"],
+    domains: ["images.unsplash.com","plus.unsplash.com",'cdn.21st.dev'],
   }
 };
 

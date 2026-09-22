@@ -30,7 +30,7 @@ export function LetsWorkTogether() {
     }
 
     return (
-        <section className="flex font-en h-screen w-screen min-h-screen bg-transparent items-center justify-center bg- px-6">
+        <section className="flex font-en py-40 md:h-screen w-screen md:min-h-screen bg-transparent items-center justify-center bg- px-6">
 
             <div className="relative flex flex-col items-center gap-1">
                 <div

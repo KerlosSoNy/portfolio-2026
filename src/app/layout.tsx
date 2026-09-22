@@ -3,6 +3,7 @@ import "./globals.css";
 import Footer from "@/components/organisims/footer/footer";
 import { namian } from "@/lib/fonts/fonts";
 import Navbar from "@/components/organisims/navbar/navbar";
+import { SmokeBackground } from "@/components/atoms/SmokeBg/SmokeBg";
 
 
 export const metadata: Metadata = {
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={` ${namian.variable} h-full antialiased`}
     >
       <body className="min-h-full font-en! flex flex-col">
+        <SmokeBackground />
         <Navbar />
         {children}
         <Footer />

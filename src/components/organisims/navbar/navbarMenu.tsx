@@ -26,7 +26,7 @@ export default function NavbarMenu() {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const pathname = usePathname();
     const isHome = pathname === "/";
-    const showLinks = isHome ? isOpen : true;
+    const showLinks = isOpen || isDrawerOpen;
 
     return (
         <div className="relative flex flex-row items-center">

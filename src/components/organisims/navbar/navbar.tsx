@@ -18,7 +18,7 @@ export default function Navbar() {
                         width={158}
                         height={40}
                         priority
-                        className="w-20 2xs:w-24 h-auto xl:w-30 "
+                        className="w-20 2xs:w-24 -ms-15  h-auto xl:w-30 "
                     />
                 </MagneticComponent>
             </Link>
