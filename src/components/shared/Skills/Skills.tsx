@@ -3,7 +3,7 @@
 import LiquidGlass from 'liquid-glass-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
-import React, { useEffect, useState, memo } from 'react';
+import React, { useEffect, useState, memo, forwardRef } from 'react';
 import { fadeUp } from '../AboutSection';
 import { WordsPullUp } from '../NewHero';
 
@@ -29,7 +29,6 @@ interface SkillConfig {
 
 interface OrbitingSkillProps {
     config: SkillConfig;
-    angle: number;
 }
 
 interface GlowingOrbitPathProps {
@@ -183,30 +182,29 @@ const skillsConfig: SkillConfig[] = [
 ];
 
 // --- Memoized Orbiting Skill Component ---
-const OrbitingSkill = memo(({ config, angle }: OrbitingSkillProps) => {
+// Position is written directly to the DOM by the parent's animation loop (no per-frame re-render).
+const OrbitingSkill = memo(forwardRef<HTMLDivElement, OrbitingSkillProps>(({ config }, ref) => {
     const [isHovered, setIsHovered] = useState(false);
-    const { orbitRadius, size, iconType, label } = config;
-
-    const x = Math.cos(angle) * orbitRadius;
-    const y = Math.sin(angle) * orbitRadius;
+    const { size, iconType, label } = config;
 
     return (
         <div
-            className="absolute top-1/2 left-1/2 transition-all duration-300 ease-out"
+            ref={ref}
+            className="absolute top-0 left-0 will-change-transform"
             style={{
                 width: `${size}px`,
                 height: `${size}px`,
-                transform: `translate(calc(${x}px - 50%), calc(${y}px - 50%))`,
                 zIndex: isHovered ? 20 : 10,
             }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
+            onPointerEnter={(e) => e.pointerType === 'mouse' && setIsHovered(true)}
+            onPointerLeave={(e) => e.pointerType === 'mouse' && setIsHovered(false)}
+            onClick={() => setIsHovered(h => !h)}
         >
             <div
                 className={`
-          relative w-full h-full p-2 bg-gray-800/90 backdrop-blur-sm
+          relative w-full h-full p-2 bg-gray-800/90
           rounded-full flex items-center justify-center
-          transition-all duration-300 cursor-pointer
+          transition-[transform,box-shadow] duration-300 cursor-pointer
           ${isHovered ? 'scale-125 shadow-2xl' : 'shadow-lg hover:shadow-xl'}
         `}
                 style={{
@@ -224,7 +222,7 @@ const OrbitingSkill = memo(({ config, angle }: OrbitingSkillProps) => {
             </div>
         </div>
     );
-});
+}));
 OrbitingSkill.displayName = 'OrbitingSkill';
 
 // --- Optimized Orbit Path Component ---
@@ -317,60 +315,116 @@ const skillCategories: SkillCategory[] = [
 ];
 
 // --- Orbit Visual ---
+// Designed at a fixed stage size, then scaled to fit the container on small screens.
+const STAGE_SIZE = 450;
+
+const orbitConfigs: Array<{ radius: number; glowColor: GlowColor; delay: number }> = [
+    { radius: 100, glowColor: 'black', delay: 0 },
+    { radius: 180, glowColor: 'black', delay: 1.5 }
+];
+
 function SkillsOrbit() {
-    const [time, setTime] = useState(0);
-    const [isPaused, setIsPaused] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const iconRefs = useRef<Array<HTMLDivElement | null>>([]);
+    const pausedRef = useRef(false);
+    const [scale, setScale] = useState(1);
 
+    // Fit the stage to the available width
     useEffect(() => {
-        if (isPaused) return;
+        const el = containerRef.current;
+        if (!el) return;
+        const observer = new ResizeObserver(([entry]) => {
+            setScale(Math.min(1, entry.contentRect.width / STAGE_SIZE));
+        });
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, []);
 
-        let animationFrameId: number;
-        let lastTime = performance.now();
+    // Animate positions via refs; only runs while the orbit is on screen
+    useEffect(() => {
+        const el = containerRef.current;
+        if (!el) return;
+
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let animationFrameId = 0;
+        let lastTime = 0;
+        let time = 0;
+
+        const place = () => {
+            skillsConfig.forEach((config, i) => {
+                const node = iconRefs.current[i];
+                if (!node) return;
+                const angle = time * config.speed + config.phaseShift;
+                const x = STAGE_SIZE / 2 + Math.cos(angle) * config.orbitRadius - config.size / 2;
+                const y = STAGE_SIZE / 2 + Math.sin(angle) * config.orbitRadius - config.size / 2;
+                node.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+            });
+        };
 
         const animate = (currentTime: number) => {
-            const deltaTime = (currentTime - lastTime) / 1000;
+            if (lastTime && !pausedRef.current) {
+                time += Math.min((currentTime - lastTime) / 1000, 0.1);
+                place();
+            }
             lastTime = currentTime;
-
-            setTime(prevTime => prevTime + deltaTime);
             animationFrameId = requestAnimationFrame(animate);
         };
 
-        animationFrameId = requestAnimationFrame(animate);
-        return () => cancelAnimationFrame(animationFrameId);
-    }, [isPaused]);
+        place();
+        if (reduceMotion) return;
 
-    const orbitConfigs: Array<{ radius: number; glowColor: GlowColor; delay: number }> = [
-        { radius: 100, glowColor: 'black', delay: 0 },
-        { radius: 180, glowColor: 'black', delay: 1.5 }
-    ];
+        const observer = new IntersectionObserver(([entry]) => {
+            cancelAnimationFrame(animationFrameId);
+            if (entry.isIntersecting) {
+                lastTime = 0;
+                animationFrameId = requestAnimationFrame(animate);
+            }
+        });
+        observer.observe(el);
+
+        return () => {
+            observer.disconnect();
+            cancelAnimationFrame(animationFrameId);
+        };
+    }, []);
 
     return (
-        <div className="relative w-full flex items-center justify-center overflow-hidden">
+        <div
+            ref={containerRef}
+            className="relative w-full max-w-[450px] mx-auto"
+            style={{ height: STAGE_SIZE * scale }}
+        >
             <div
-                className="relative overflow-hidden w-[calc(100vw-40px)] h-[calc(100vw-40px)] md:w-[450px] md:h-[450px] flex items-center justify-center"
-                onMouseEnter={() => setIsPaused(true)}
-                onMouseLeave={() => setIsPaused(false)}
+                className="absolute top-0 left-1/2 flex items-center justify-center"
+                style={{
+                    width: STAGE_SIZE,
+                    height: STAGE_SIZE,
+                    transform: `translateX(-50%) scale(${scale})`,
+                    transformOrigin: 'top center',
+                }}
+                onPointerEnter={(e) => { if (e.pointerType === 'mouse') pausedRef.current = true; }}
+                onPointerLeave={(e) => { if (e.pointerType === 'mouse') pausedRef.current = false; }}
             >
 
                 {/* Central "Code" Icon with enhanced glow */}
-                <LiquidGlass className="w-20 h-20 mt-7 ms-3">
-                    <div className="w-20 h-22  rounded-full flex items-center justify-center z-10 relative shadow-2xl">
-                        <div className="absolute inset-0 rounded-full bg-black/30 blur-xl animate-pulse"></div>
-                        <div className="absolute inset-0 rounded-full bg-black blur-2xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-                        <div className="relative z-10">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <defs>
-                                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" stopColor="#06B6D4" />
-                                        <stop offset="100%" stopColor="#9333EA" />
-                                    </linearGradient>
-                                </defs>
-                                <polyline points="16 18 22 12 16 6"></polyline>
-                                <polyline points="8 6 2 12 8 18"></polyline>
-                            </svg>
-                        </div>
+                {/* <LiquidGlass className="w-20 h-20 mt-7 ms-3"> */}
+                <div className="w-20 h-22  rounded-full flex items-center justify-center z-10 relative shadow-2xl">
+                    <div className="absolute inset-0 rounded-full bg-black/30 blur-xl animate-pulse"></div>
+                    <div className="absolute inset-0 rounded-full bg-black blur-2xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+                    <div className="relative z-10">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="url(#gradient)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stopColor="#06B6D4" />
+                                    <stop offset="100%" stopColor="#9333EA" />
+                                </linearGradient>
+                            </defs>
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
                     </div>
-                </LiquidGlass>
+                </div>
+                {/* </LiquidGlass> */}
 
                 {/* Render glowing orbit paths */}
                 {orbitConfigs.map((config) => (
@@ -383,16 +437,13 @@ function SkillsOrbit() {
                 ))}
 
                 {/* Render orbiting skill icons */}
-                {skillsConfig.map((config) => {
-                    const angle = time * config.speed + (config.phaseShift || 0);
-                    return (
-                        <OrbitingSkill
-                            key={config.id}
-                            config={config}
-                            angle={angle}
-                        />
-                    );
-                })}
+                {skillsConfig.map((config, i) => (
+                    <OrbitingSkill
+                        key={config.id}
+                        ref={(node) => { iconRefs.current[i] = node; }}
+                        config={config}
+                    />
+                ))}
             </div>
         </div>
     );
@@ -411,12 +462,12 @@ export default function Skills() {
     return (
         <section
             ref={sectionRef}
-            className="relative w-full font-en! z-10 overflow-hidden bg-transparent text-white py-20 sm:py-32"
+            className="relative w-full font-en! z-10 overflow-hidden bg-transparent text-white py-20 md:py-45"
         >
             <motion.span
                 aria-hidden
                 style={{ y: watermarkY }}
-                className="pointer-events-none absolute -top-2 md:top-10 left-1/2 -translate-x-1/2 select-none whitespace-nowrap text-[26vw] font-medium leading-none tracking-tighter text-white/20 sm:text-[18vw]"
+                className="pointer-events-none absolute -top-2 md:-top-3 left-1/2 -translate-x-1/2 select-none whitespace-nowrap text-[26vw] font-medium leading-none tracking-tighter text-white/20 sm:text-[18vw]"
             >
                 Skills
             </motion.span>

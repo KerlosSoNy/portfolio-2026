@@ -121,7 +121,7 @@ export const ProjectsSection = () => {
             <div ref={innerRef} className="h-screen w-full overflow-hidden">
                 <motion.span
                     aria-hidden
-                    className="pointer-events-none absolute top-45 md:top-10 left-1/2 -translate-x-1/2 select-none whitespace-nowrap text-[26vw] font-medium leading-none tracking-tighter text-white/20 sm:text-[18vw]"
+                    className="pointer-events-none absolute top-45 md:-top-34 left-1/2 -translate-x-1/2 select-none whitespace-nowrap text-[26vw] font-medium leading-none tracking-tighter text-white/20 sm:text-[18vw]"
                 >
                     Projects
                 </motion.span>

@@ -82,7 +82,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
             <motion.span
                 aria-hidden
                 style={{ y: watermarkY }}
-                className="pointer-events-none absolute top-24 md:top-10 left-1/2 -translate-x-1/2 select-none whitespace-nowrap text-[23vw] font-medium leading-none tracking-tighter text-white/20 sm:text-[17vw]"
+                className="pointer-events-none absolute top-24 md:top-0 left-1/2 -translate-x-1/2 select-none whitespace-nowrap text-[23vw] font-medium leading-none tracking-tighter text-white/20 sm:text-[17vw]"
             >
                 Experience
             </motion.span>

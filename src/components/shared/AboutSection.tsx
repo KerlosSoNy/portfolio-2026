@@ -44,7 +44,7 @@ export const AboutSection = () => {
             <motion.span
                 aria-hidden
                 style={{ y: watermarkY }}
-                className="pointer-events-none absolute top-34 md:top-45 left-1/2 -translate-x-1/2 select-none whitespace-nowrap text-[26vw] font-medium leading-none tracking-tighter text-white/20 sm:text-[18vw]"
+                className="pointer-events-none absolute top-34 left-1/2 -translate-x-1/2 select-none whitespace-nowrap text-[26vw] font-medium leading-none tracking-tighter text-white/20 sm:text-[18vw]"
             >
                 About
             </motion.span>
